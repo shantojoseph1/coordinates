@@ -1,0 +1,92 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabricmc.net/' }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+plugins {
+    id 'fabric-loom' version '1.10.1'
+    id 'maven-publish'
+}
+version = project.mod_version
+group = project.maven_group
+base.archivesName = project.archives_base_name
+
+repositories {
+    maven { url 'https://maven.fabricmc.net/' }
+    mavenCentral()
+    maven { url 'https://maven.terraformersmc.com/releases/' }
+    gradlePluginPortal()
+}
+
+// This new block forces Gradle to use the correct Java version.
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    
+    // ModMenu integration
+    modImplementation "com.terraformersmc:modmenu:12.0.0-beta.1"
+    
+    // Gson for JSON configuration
+    implementation "com.google.code.gson:gson:2.10.1"
+}
+
+processResources {
+    inputs.property "version", project.version
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    it.options.release = 21
+}
+
+loom {
+    splitEnvironmentSourceSets()
+    mods {
+        "coordinates-by-razer" {
+            sourceSet sourceSets.main
+            sourceSet sourceSets.client
+        }
+    }
+    
+    runs {
+        client {
+            client()
+            setConfigName("Minecraft Client")
+            ideConfigGenerated(true)
+            runDir("run")
+        }
+    }
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}"}
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+    
+    repositories {
+        // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+    }
+}

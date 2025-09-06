@@ -1,0 +1,42 @@
+{
+	"schemaVersion": 1,
+	"id": "coordinates-by-razer",
+	"version": "${version}",
+	"name": "Coordinates |NOT.RAZER|",
+	"description": "Displays customizable player coordinates. Enhance your gameplay with advanced display and configuration options.",
+	"authors": [
+		"not.razer"
+	],
+	"contact": {
+		"discord": "https://discord.gg/k8dXxS5kE3",
+		"homepage": "https://razermc.online",
+		"sources": "https://github.com/not-razer/coordinates"
+	},
+	"license": "MIT",
+	"icon": "cords.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"com.razer.coordinates.CoordinatesByRazerClient"
+		],
+		"modmenu": [
+			"com.razer.coordinates.modmenu.ModMenuIntegration"
+		]
+	},
+	"mixins": [
+		{
+			"config": "coordinates-by-razer.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	
+	"depends": {
+		"fabricloader": ">=0.16.0",
+		"minecraft": ">=1.21.6",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"modmenu": "*"
+	}
+}
